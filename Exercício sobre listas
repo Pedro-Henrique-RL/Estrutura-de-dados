@@ -1,0 +1,91 @@
+class Node:
+    def __init__(self, value):
+        self.value = value
+        self.next = None
+
+class LinkedList:
+    def __init__(self):
+        self.head = None
+
+    def append(self, value):
+        new_node = Node(value)
+        if not self.head:
+            self.head = new_node
+            return
+        temp = self.head
+        while temp.next:
+            temp = temp.next
+        temp.next = new_node
+
+    def print_list(self):
+        temp = self.head
+        while temp:
+            print(temp.value, end=" -> ")
+            temp = temp.next
+        print("None")
+
+# 1. Remover todas as ocorrências de um número da lista encadeada
+def retira_n(lst, n):
+    while lst.head and lst.head.value == n:
+        lst.head = lst.head.next
+    temp = lst.head
+    while temp and temp.next:
+        if temp.next.value == n:
+            temp.next = temp.next.next
+        else:
+            temp = temp.next
+    return lst
+
+# 2. Separar a lista na primeira ocorrência de n
+def separa(lst, n):
+    temp = lst.head
+    while temp and temp.next:
+        if temp.next.value == n:
+            second_list = LinkedList()
+            second_list.head = temp.next.next
+            temp.next = None
+            return second_list
+        temp = temp.next
+    return None
+
+# 3. Intercalar duas listas
+def merge(l1, l2):
+    merged_list = LinkedList()
+    temp1, temp2 = l1.head, l2.head
+    while temp1 or temp2:
+        if temp1:
+            merged_list.append(temp1.value)
+            temp1 = temp1.next
+        if temp2:
+            merged_list.append(temp2.value)
+            temp2 = temp2.next
+    return merged_list
+
+# 4. Inverter uma lista encadeada
+def inverte(lst):
+    prev, current = None, lst.head
+    while current:
+        next_node = current.next
+        current.next = prev
+        prev = current
+        current = next_node
+    lst.head = prev
+    return lst
+
+# 5. Verificar se duas listas são iguais
+def igual(l1, l2):
+    temp1, temp2 = l1.head, l2.head
+    while temp1 and temp2:
+        if temp1.value != temp2.value:
+            return False
+        temp1, temp2 = temp1.next, temp2.next
+    return temp1 is None and temp2 is None
+
+# 6. Copiar uma lista encadeada
+def copia(lst):
+    new_list = LinkedList()
+    temp = lst.head
+    while temp:
+        new_list.append(temp.value)
+        temp = temp.next
+    return new_list
