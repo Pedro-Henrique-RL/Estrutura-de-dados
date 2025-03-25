@@ -1,0 +1,60 @@
+import random
+
+class Guerreiro:
+    def __init__(self, nome):
+        self.nome = nome
+        self.anterior = None
+        self.proximo = None
+
+class RoletaRussaCircular:
+    def __init__(self, guerreiros):
+        self.head = None
+        self.criar_lista(guerreiros)
+
+    def criar_lista(self, guerreiros):
+        """Cria a lista duplamente encadeada circular."""
+        anterior = None
+        for nome in guerreiros:
+            novo = Guerreiro(nome)
+            if not self.head:
+                self.head = novo
+            else:
+                anterior.proximo = novo
+                novo.anterior = anterior
+            anterior = novo
+        # Fechar o círculo
+        anterior.proximo = self.head
+        self.head.anterior = anterior
+
+    def jogar(self):
+        """Simula o jogo até restar um único guerreiro."""
+        atual = self.head
+        while atual.proximo != atual:
+            # Escolhe aleatoriamente um guerreiro para eliminar
+            passos = random.randint(1, len(self.listar_guerreiros()))
+            for _ in range(passos):
+                atual = atual.proximo
+            
+            print(f"{atual.nome} foi eliminado!")
+            atual.anterior.proximo = atual.proximo
+            atual.proximo.anterior = atual.anterior
+            atual = atual.proximo
+
+        print(f"O sobrevivente é {atual.nome}!")
+
+    def listar_guerreiros(self):
+        """Retorna uma lista com os nomes dos guerreiros restantes."""
+        guerreiros = []
+        atual = self.head
+        if atual:
+            while True:
+                guerreiros.append(atual.nome)
+                atual = atual.proximo
+                if atual == self.head:
+                    break
+        return guerreiros
+
+# Exemplo de uso
+guerreiros = ["Thor", "Conan", "Kratos", "Hercules", "Atreus"]
+jogo = RoletaRussaCircular(guerreiros)
+jogo.jogar()
