@@ -1,0 +1,122 @@
+import random
+
+class Node:
+    def __init__(self, data):
+        self.data = data
+        self.next = None
+
+class CircularLinkedList:
+    def __init__(self):
+        self.tail = None
+
+    def insert(self, data):
+        new_node = Node(data)
+        if not self.tail:
+            self.tail = new_node
+            self.tail.next = self.tail
+        else:
+            new_node.next = self.tail.next
+            self.tail.next = new_node
+            self.tail = new_node
+
+    def search(self, value):
+        if not self.tail:
+            return False
+        current = self.tail.next
+        while True:
+            if current.data == value:
+                return True
+            current = current.next
+            if current == self.tail.next:
+                break
+        return False
+
+    def remove(self, value):
+        if not self.tail:
+            return
+        current = self.tail.next
+        prev = self.tail
+        while True:
+            if current.data == value:
+                if current == self.tail:
+                    self.tail = prev
+                prev.next = current.next
+                if current == prev:
+                    self.tail = None
+                return
+            prev = current
+            current = current.next
+            if current == self.tail.next:
+                break
+
+    def count(self):
+        if not self.tail:
+            return 0
+        count = 0
+        current = self.tail.next
+        while True:
+            count += 1
+            current = current.next
+            if current == self.tail.next:
+                break
+        return count
+
+def batata_quente(jogadores, rodadas=5):
+    lista = CircularLinkedList()
+    for jogador in jogadores:
+        lista.insert(jogador)
+
+    while lista.count() > 1:
+        k = random.randint(1, rodadas)
+        current = lista.tail.next
+
+        for _ in range(k - 1):
+            current = current.next
+
+        print(f"{current.data} foi eliminado!")
+        lista.remove(current.data)
+
+    print(f"Vencedor: {lista.tail.data}")
+
+class Cavaleiro:
+    def __init__(self, nome):
+        self.nome = nome
+        self.hp = random.randint(50, 100)
+
+def batalha_cavaleiros(nomes):
+    lista = CircularLinkedList()
+    for nome in nomes:
+        lista.insert(Cavaleiro(nome))
+
+    while lista.count() > 1:
+        atacante = lista.tail.next
+        alvo = atacante.next
+        dano = random.randint(5, 10)
+        alvo.data.hp -= dano
+        print(f"{atacante.data.nome} atacou {alvo.data.nome} causando {dano} de dano! (HP restante: {alvo.data.hp})")
+
+        if alvo.data.hp <= 0:
+            print(f"{alvo.data.nome} foi derrotado!")
+            lista.remove(alvo.data)
+
+    print(f"Campeão: {lista.tail.data.nome} com {lista.tail.data.hp} de HP!")
+
+if __name__ == "__main__":
+    lista = CircularLinkedList()
+    lista.insert(10)
+    lista.insert(20)
+    lista.insert(30)
+    print("Busca pelo número 20:", lista.search(20))
+    print("Busca pelo número 40:", lista.search(40))
+    print("Número de elementos na lista:", lista.count())
+    lista.remove(20)
+    print("Busca pelo número 20 após remoção:", lista.search(20))
+    print("Número de elementos na lista após remoção:", lista.count())
+
+    jogadores = ["Ana", "Bruno", "Carlos", "Diana", "Eduardo"]
+    print("\nJogo da Batata Quente:")
+    batata_quente(jogadores)
+
+    cavaleiros = ["Arthur", "Lancelot", "Gawain", "Percival", "Tristan"]
+    print("\nBatalha dos Cavaleiros:")
+    batalha_cavaleiros(cavaleiros)
